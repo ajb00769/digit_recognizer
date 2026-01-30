@@ -3,9 +3,9 @@ package ml
 import "math"
 
 // TODO: Input Layer 2D array of 28 * 28
-func input([784]float32) []float32 {
+func input([784]float64) []float64 {
 	// Implement input layer logic here
-	var output []float32
+	var output []float64
 	return output
 }
 
