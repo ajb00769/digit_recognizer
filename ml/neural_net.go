@@ -2,11 +2,11 @@ package ml
 
 import "math"
 
-const EULER float64 = 2.718281828459045
-
 // TODO: Input Layer 2D array of 28 * 28
 func input([784]float32) []float32 {
 	// Implement input layer logic here
+	var output []float32
+	return output
 }
 
 // TODO: Hidden Layer
@@ -25,11 +25,11 @@ func output() {
 
 // TODO: Activation Functions
 func sigmoid(x float64) float64 {
-	return 1 / (1 + (EULER * math.Exp(-x)))
+	return 1 / (1 + math.Pow(math.E, -x))
 }
 
 // TODO: Matrix multiplication
-func matMul(matrixA [][]float32, matrixB [][]float32) [][]float32 {
-	// Implement
-	return nil
+func matMul(matrixA, matrixB [][]float64) [][]float64 {
+	var output [][]float64
+	return output
 }
