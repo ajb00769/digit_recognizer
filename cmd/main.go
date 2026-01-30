@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 )
 
 func main() {
@@ -45,9 +46,23 @@ func matMul(matrixA, matrixB [][]float64) [][]float64 {
 				currentMatrixBColumnValues[k] = matrixB[k][j]
 			}
 
-			fmt.Printf("%v * %v", currentMatrixARow, currentMatrixBColumnValues)
-			fmt.Println()
+			sumOfArrayProducts := arraySum(multArrays(currentMatrixARow, currentMatrixBColumnValues))
+			result[i][j] = sumOfArrayProducts
 		}
+	}
+
+	return result
+}
+
+func multArrays(arr1, arr2 []float64) []float64 {
+	if len(arr1) != len(arr2) {
+		log.Fatal("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
+	}
+
+	result := make([]float64, len(arr1))
+
+	for i := range len(arr1) {
+		result[i] = arr1[i] * arr2[i]
 	}
 
 	return result
