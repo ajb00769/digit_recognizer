@@ -31,5 +31,11 @@ func sigmoid(x float64) float64 {
 // TODO: Matrix multiplication
 func matMul(matrixA, matrixB [][]float64) [][]float64 {
 	var output [][]float64
+
+	/*
+		for rowA := 0; rowA < len(matrixA); rowA++ {
+		for columnA := 0; columnA < len(matrixA[0])
+		}*/
+
 	return output
 }
