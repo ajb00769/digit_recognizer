@@ -38,20 +38,14 @@ func matMul(matrixA, matrixB [][]float64) [][]float64 {
 	for i := range matrixA {
 		currentMatrixARow := matrixA[i]
 
-		fmt.Printf("%v", currentMatrixARow)
-		fmt.Println()
+		for j := range len(matrixB[0]) {
+			currentMatrixBColumnValues := make([]float64, len(matrixB))
 
-		currentMatrixBColumnValues := make([]float64, len(matrixB))
+			for k := range matrixB {
+				currentMatrixBColumnValues[k] = matrixB[k][j]
+			}
 
-		for j := range matrixB {
-			currentMatrixBColumnValues[j] = matrixB[j][i]
-		}
-
-		fmt.Printf("%v", currentMatrixBColumnValues)
-		fmt.Println()
-
-		for k := range len(matrixB) {
-			fmt.Printf("%v", currentMatrixARow[k]*currentMatrixBColumnValues[k])
+			fmt.Printf("%v * %v", currentMatrixARow, currentMatrixBColumnValues)
 			fmt.Println()
 		}
 	}
