@@ -3,6 +3,10 @@ package ml
 import "log"
 
 func MatMul(matrixA, matrixB [][]float64) [][]float64 {
+	if len(matrixA[0]) != len(matrixB) {
+		log.Fatal("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
+	}
+
 	result := createMatrix(len(matrixA), len(matrixB[0]))
 
 	for i := range matrixA {
@@ -34,10 +38,6 @@ func createMatrix(rows, cols int) [][]float64 {
 }
 
 func multArrays(arr1, arr2 []float64) []float64 {
-	if len(arr1) != len(arr2) {
-		log.Fatal("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
-	}
-
 	result := make([]float64, len(arr1))
 
 	for i := range len(arr1) {
