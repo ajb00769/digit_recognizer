@@ -1,11 +1,10 @@
 package ml
 
-import "log"
+import "errors"
 
-func MatMul(matrixA, matrixB [][]float64) [][]float64 {
+func MatMul(matrixA, matrixB [][]float64) ([][]float64, error) {
 	if len(matrixA[0]) != len(matrixB) {
-		// TODO: replace error handling without crashing app
-		log.Fatal("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
+		return nil, errors.New("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
 	}
 
 	result := createMatrix(len(matrixA), len(matrixB[0]))
@@ -24,7 +23,7 @@ func MatMul(matrixA, matrixB [][]float64) [][]float64 {
 		}
 	}
 
-	return result
+	return result, nil
 }
 
 func createMatrix(rows, cols int) [][]float64 {

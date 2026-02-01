@@ -17,7 +17,9 @@ func main() {
 		{4, -1},
 	}
 
-	result := ml.MatMul(matrixA, matrixB)
+	result, err := ml.MatMul(matrixA, matrixB)
 
-	fmt.Printf("%v\n", result)
+	if err == nil {
+		fmt.Printf("%v\n", result)
+	}
 }
