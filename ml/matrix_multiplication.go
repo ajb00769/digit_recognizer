@@ -2,9 +2,11 @@ package ml
 
 import "errors"
 
+var ErrInvalidDemensions = errors.New("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
+
 func MatMul(matrixA, matrixB [][]float64) ([][]float64, error) {
 	if len(matrixA[0]) != len(matrixB) {
-		return nil, errors.New("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
+		return nil, ErrInvalidDemensions
 	}
 
 	result := createMatrix(len(matrixA), len(matrixB[0]))
