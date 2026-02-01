@@ -3,6 +3,7 @@ package main
 import (
 	"allenbercero/digit_recognizer/ml"
 	"fmt"
+	"os"
 )
 
 func main() {
@@ -19,7 +20,9 @@ func main() {
 
 	result, err := ml.MatMul(matrixA, matrixB)
 
-	if err == nil {
-		fmt.Printf("%v\n", result)
+	if err != nil {
+		fmt.Printf("%v\n", err)
+		os.Exit(1)
 	}
+	fmt.Printf("%v\n", result)
 }
