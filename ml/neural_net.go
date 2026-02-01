@@ -27,5 +27,5 @@ func output() {
 
 // TODO: Activation Functions
 func sigmoid(x float64) float64 {
-	return 1 / (1 + math.Pow(math.E, -x))
+	return 1 / (1 + math.Exp(-x))
 }
