@@ -4,6 +4,7 @@ import "log"
 
 func MatMul(matrixA, matrixB [][]float64) [][]float64 {
 	if len(matrixA[0]) != len(matrixB) {
+		// TODO: replace error handling without crashing app
 		log.Fatal("[ERROR] Matrix A's columns must be equal to Matrix B's rows.\n")
 	}
 
@@ -11,10 +12,9 @@ func MatMul(matrixA, matrixB [][]float64) [][]float64 {
 
 	for i := range matrixA {
 		currentMatrixARow := matrixA[i]
+		currentMatrixBColumnValues := make([]float64, len(matrixB))
 
 		for j := range len(matrixB[0]) {
-			currentMatrixBColumnValues := make([]float64, len(matrixB))
-
 			for k := range matrixB {
 				currentMatrixBColumnValues[k] = matrixB[k][j]
 			}
