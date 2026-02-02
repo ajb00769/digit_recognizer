@@ -4,7 +4,9 @@ import (
 	"math"
 )
 
-// Input Layer 28 * 28 matrix flatten
+// Input Layer 28 * 28 matrix flatten. We do not mutate the input so
+// it's safe to pass in the input parameter value itself instead of
+// creating a copy of it
 func input(matrixInput *[28][28]float64) [784]float64 {
 	// NOTE: using fixed size array to enforce rigid input lengths
 	// anything less or greater than the fixed size should not be
