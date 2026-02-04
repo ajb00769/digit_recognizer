@@ -46,11 +46,29 @@ func Sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }
 
-// Used in the output layer
-func Softmax() {}
+// Activation function used in the output layer
+// TODO: create tests
+func Softmax(logits []float64) []float64 {
+	var total float64 = 0.0
+	output := make([]float64, len(logits))
+
+	for i := range logits {
+		total += math.Exp(logits[i])
+	}
+
+	for i := range logits {
+		output[i] = math.Exp(logits[i]) / total
+	}
+
+	return output
+}
+
+// The final output should be the index of the result of slices.Max()
+// against the returned slice of the Softmax() function
 
 // Neuron initializer. neron count and parameter count is a slice
 // because it can be different in each hidden layer
+// TODO: create tests
 func InitNeuron(neuronCount int, paramCount int) (neurons [][]float64, biases []float64) {
 	neurons = make([][]float64, neuronCount)
 	biases = make([]float64, neuronCount)
