@@ -1,7 +1,9 @@
 package ml
 
 import (
+	"fmt"
 	"math"
+	"math/rand"
 )
 
 // Input Layer 28 * 28 matrix flatten. We do not mutate the Input so
@@ -37,11 +39,26 @@ func LayerTwo() {
 // TODO: Output Layer
 func Output() {
 	// Implement output layer logic here
+	// Use softmax activation function
 }
 
 // TODO: Activation Functions
-func sigmoid(x float64) float64 {
+func Sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }
 
-func initNeuronWeights() {}
+// Used in the output layer
+func Softmax() {}
+
+func InitNeuron(neuronCount int, paramCount int) {
+	neurons := make([][]float64, neuronCount)
+
+	for neuron := range neurons {
+		neurons[neuron] = make([]float64, paramCount)
+		for param := range neurons[neuron] {
+			neurons[neuron][param] = rand.Float64()
+		}
+	}
+
+	fmt.Println(neurons)
+}
