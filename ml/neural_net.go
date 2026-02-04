@@ -1,7 +1,6 @@
 package ml
 
 import (
-	"fmt"
 	"math"
 	"math/rand"
 )
@@ -50,15 +49,19 @@ func Sigmoid(x float64) float64 {
 // Used in the output layer
 func Softmax() {}
 
-func InitNeuron(neuronCount int, paramCount int) {
-	neurons := make([][]float64, neuronCount)
+// Neuron initializer. neron count and parameter count is a slice
+// because it can be different in each hidden layer
+func InitNeuron(neuronCount int, paramCount int) (neurons [][]float64, biases []float64) {
+	neurons = make([][]float64, neuronCount)
+	biases = make([]float64, neuronCount)
 
 	for neuron := range neurons {
 		neurons[neuron] = make([]float64, paramCount)
 		for param := range neurons[neuron] {
 			neurons[neuron][param] = rand.Float64()
 		}
+		biases[neuron] = rand.Float64()
 	}
 
-	fmt.Println(neurons)
+	return neurons, biases
 }
