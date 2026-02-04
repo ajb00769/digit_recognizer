@@ -4,10 +4,10 @@ import (
 	"math"
 )
 
-// Input Layer 28 * 28 matrix flatten. We do not mutate the input so
-// it's safe to pass in the input parameter value itself instead of
+// Input Layer 28 * 28 matrix flatten. We do not mutate the Input so
+// it's safe to pass in the Input parameter value itself instead of
 // creating a copy of it
-func input(matrixInput *[28][28]float64) [784]float64 {
+func Input(matrixInput *[28][28]float64) [784]float64 {
 	// NOTE: using fixed size array to enforce rigid input lengths
 	// anything less or greater than the fixed size should not be
 	// acceptable since the feed-forward mechanism to other layers
@@ -26,16 +26,16 @@ func input(matrixInput *[28][28]float64) [784]float64 {
 }
 
 // TODO: Hidden Layer
-func layerOne() {
+func LayerOne() {
 	// Implement hidden layer logic here
 }
 
-func layerTwo() {
+func LayerTwo() {
 	// Implement hidden layer logic here
 }
 
 // TODO: Output Layer
-func output() {
+func Output() {
 	// Implement output layer logic here
 }
 
@@ -43,3 +43,5 @@ func output() {
 func sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }
+
+func initNeuronWeights() {}

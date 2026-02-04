@@ -26,7 +26,7 @@ func TestMain(m *testing.M) {
 func TestInputHappyPath(t *testing.T) {
 	var expected [784]float64
 
-	result := input(&testMatrix)
+	result := Input(&testMatrix)
 
 	for i := range expected {
 		expected[i] = float64(i) / 100.0
@@ -38,7 +38,7 @@ func TestInputHappyPath(t *testing.T) {
 }
 
 func TestInputAllZeroes(t *testing.T) {
-	result := input(&emptyMatrix)
+	result := Input(&emptyMatrix)
 	if result != emptyArray {
 		t.Errorf("got %v, want %v", result, emptyArray)
 	}
