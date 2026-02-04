@@ -17,8 +17,6 @@ func populateTestMatrix() {
 	}
 }
 
-func populateExpectedInputHappyPath(arr *[784]float64) {}
-
 func TestMain(m *testing.M) {
 	populateTestMatrix()
 	exitCode := m.Run()
@@ -45,4 +43,3 @@ func TestInputAllZeroes(t *testing.T) {
 		t.Errorf("got %v, want %v", result, emptyArray)
 	}
 }
-func TestInputFlatOrder(t *testing.T) {}
