@@ -42,13 +42,12 @@ func Output() {
 	// Use softmax activation function
 }
 
-// TODO: Activation Functions
+// Activation Functions
 func Sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }
 
 // Activation function used in the output layer
-// TODO: create tests
 func Softmax(logits []float64) []float64 {
 	// get max value in slice for exponent rule
 	max := slices.Max(logits)
