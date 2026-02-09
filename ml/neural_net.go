@@ -73,21 +73,24 @@ func Softmax(logits []float64) []float64 {
 
 // The final output should be the index of the result of slices.Max()
 // against the returned slice of the Softmax() function
+type neuron struct {
+	weights []float64
+	bias    float64
+}
 
 // Neuron initializer. neron count and parameter count is a slice
 // because it can be different in each hidden layer
 // TODO: create tests
-func InitNeuron(neuronCount int, paramCount int) (neurons [][]float64, biases []float64) {
-	neurons = make([][]float64, neuronCount)
-	biases = make([]float64, neuronCount)
+func InitNeuron(neuronCount int, paramCount int) []neuron {
+	var neurons = make([]neuron, neuronCount)
 
-	for neuron := range neurons {
-		neurons[neuron] = make([]float64, paramCount)
-		for param := range neurons[neuron] {
-			neurons[neuron][param] = rand.Float64()
+	for i := range neurons {
+		neurons[i].bias = rand.Float64()
+		neurons[i].weights = make([]float64, paramCount)
+		for weight := range neurons[i].weights {
+			neurons[i].weights[weight] = rand.Float64()
 		}
-		biases[neuron] = rand.Float64()
 	}
 
-	return neurons, biases
+	return neurons
 }
