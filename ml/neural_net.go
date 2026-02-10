@@ -1,14 +1,10 @@
 package ml
 
 import (
+	"errors"
 	"math"
 	"slices"
 )
-
-type hiddenLayer struct {
-	layerOrderId int
-	neuronCount  int
-}
 
 type Neuron struct {
 	Weights []float64
@@ -36,10 +32,29 @@ func Input(matrixInput *[28][28]float64) [784]float64 {
 	return flattened
 }
 
-// Hidden Layer, accepts a slice of hiddenLayer structs where you can set
-// the number of neurons per layer and define the order of execution per layer
-func HiddenLayer(layerStruct []hiddenLayer) {
-	// Implement hidden layer logic here
+type HiddenLayer struct {
+	LayerName string
+	Neurons   []Neuron
+}
+
+func NewHiddenLayer(layerName string, neuronCount uint, paramsPerNeuron uint) (layer HiddenLayer, err error) {
+	if neuronCount == 0 || paramsPerNeuron == 0 {
+		err = errors.New("Arg neuronCount and paramsPerNeuron must at least be 1")
+		return
+	}
+
+	layer = HiddenLayer{layerName, make([]Neuron, neuronCount)}
+
+	for i := range layer.Neurons {
+		layer.Neurons[i].Weights = make([]float64, paramsPerNeuron)
+	}
+	return
+}
+
+func (hiddenLayer *HiddenLayer) LoadWeights() {
+	// check if weights file exist
+	// check if weights file is not empty
+	// check if weights for this layer match the hyperparams in CreateHiddenLayer
 }
 
 // TODO: Output Layer
@@ -77,4 +92,3 @@ func Softmax(logits []float64) []float64 {
 }
 
 // TODO: load neuron function used during inference
-func LoadNeuron() {}
