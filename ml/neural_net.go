@@ -27,12 +27,15 @@ func Input(matrixInput *[28][28]float64) [784]float64 {
 	return flattened
 }
 
-// TODO: Hidden Layer
-func LayerOne() {
-	// Implement hidden layer logic here
+// struct
+type hiddenLayer struct {
+	layerOrderId int
+	neuronCount  int
 }
 
-func LayerTwo() {
+// Hidden Layer, accepts a slice of hiddenLayer structs where you can set
+// the number of neurons per layer and define the order of execution per layer
+func HiddenLayer(layerStruct []hiddenLayer) {
 	// Implement hidden layer logic here
 }
 
@@ -79,7 +82,6 @@ type neuron struct {
 
 // Neuron initializer. neron count and parameter count is a slice
 // because it can be different in each hidden layer
-// TODO: create tests
 func InitNeuron(neuronCount int, paramCount int) []neuron {
 	var neurons = make([]neuron, neuronCount)
 
@@ -93,3 +95,6 @@ func InitNeuron(neuronCount int, paramCount int) []neuron {
 
 	return neurons
 }
+
+// TODO: load neuron function used during inference
+func LoadNeuron() {}
