@@ -5,6 +5,16 @@ import (
 	"slices"
 )
 
+type hiddenLayer struct {
+	layerOrderId int
+	neuronCount  int
+}
+
+type Neuron struct {
+	Weights []float64
+	Bias    float64
+}
+
 // Input Layer 28 * 28 matrix flatten. We do not mutate the Input so
 // it's safe to pass in the Input parameter value itself instead of
 // creating a copy of it
@@ -24,12 +34,6 @@ func Input(matrixInput *[28][28]float64) [784]float64 {
 	}
 
 	return flattened
-}
-
-// struct
-type hiddenLayer struct {
-	layerOrderId int
-	neuronCount  int
 }
 
 // Hidden Layer, accepts a slice of hiddenLayer structs where you can set
@@ -70,13 +74,6 @@ func Softmax(logits []float64) []float64 {
 	}
 
 	return output
-}
-
-// The final output should be the index of the result of slices.Max()
-// against the returned slice of the Softmax() function
-type Neuron struct {
-	Weights []float64
-	Bias    float64
 }
 
 // TODO: load neuron function used during inference
