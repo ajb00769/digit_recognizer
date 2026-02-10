@@ -2,7 +2,6 @@ package ml
 
 import (
 	"math"
-	"math/rand"
 	"slices"
 )
 
@@ -75,25 +74,9 @@ func Softmax(logits []float64) []float64 {
 
 // The final output should be the index of the result of slices.Max()
 // against the returned slice of the Softmax() function
-type neuron struct {
-	weights []float64
-	bias    float64
-}
-
-// Neuron initializer. neron count and parameter count is a slice
-// because it can be different in each hidden layer
-func InitNeuron(neuronCount int, paramCount int) []neuron {
-	var neurons = make([]neuron, neuronCount)
-
-	for i := range neurons {
-		neurons[i].bias = rand.Float64()
-		neurons[i].weights = make([]float64, paramCount)
-		for weight := range neurons[i].weights {
-			neurons[i].weights[weight] = rand.Float64()
-		}
-	}
-
-	return neurons
+type Neuron struct {
+	Weights []float64
+	Bias    float64
 }
 
 // TODO: load neuron function used during inference
