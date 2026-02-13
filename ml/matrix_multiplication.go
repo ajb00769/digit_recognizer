@@ -9,7 +9,7 @@ func MatMul(matrixA, matrixB [][]float64) ([][]float64, error) {
 		return nil, ErrInvalidDemensions
 	}
 
-	result := createMatrix(len(matrixA), len(matrixB[0]))
+	result := CreateMatrix(len(matrixA), len(matrixB[0]))
 
 	for i := range matrixA {
 		currentMatrixARow := matrixA[i]
@@ -28,7 +28,7 @@ func MatMul(matrixA, matrixB [][]float64) ([][]float64, error) {
 	return result, nil
 }
 
-func createMatrix(rows, cols int) [][]float64 {
+func CreateMatrix(rows, cols int) [][]float64 {
 	matrix := make([][]float64, rows)
 
 	for rowNum := range len(matrix) {
