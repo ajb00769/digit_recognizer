@@ -131,7 +131,7 @@ func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer)
 
 		for row := range result {
 			for col := range result[row] {
-				activated := Sigmoid(result[row][col] + hiddenLayers[0].Bias)
+				activated := Sigmoid(result[row][col] + hiddenLayers[layer].Bias)
 				activatedResult[row][col] = activated
 			}
 		}
