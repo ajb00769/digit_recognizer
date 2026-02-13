@@ -6,8 +6,8 @@ import (
 )
 
 // helper to create a HiddenLayer with neurons and weights already allocated
-func createTestLayer(t *testing.T, name string, neuronCount uint, paramsPerNeuron uint) ml.HiddenLayer {
-	layer, err := ml.NewHiddenLayer(name, neuronCount, paramsPerNeuron)
+func createTestLayer(t *testing.T, layerNum uint, neuronCount uint, paramsPerNeuron uint) ml.HiddenLayer {
+	layer, err := ml.NewHiddenLayer(layerNum, neuronCount, paramsPerNeuron)
 	if err != nil {
 		t.Fatalf("failed to create test layer: %v", err)
 	}
@@ -15,7 +15,7 @@ func createTestLayer(t *testing.T, name string, neuronCount uint, paramsPerNeuro
 }
 
 func TestInitHiddenLayerNeuronsHappyPath(t *testing.T) {
-	layer := createTestLayer(t, "test", 12, 36)
+	layer := createTestLayer(t, 0, 12, 36)
 
 	InitHiddenLayerNeurons(&layer)
 
@@ -32,7 +32,7 @@ func TestInitHiddenLayerNeuronsHappyPath(t *testing.T) {
 
 // Test if initialized neuron's weight is between 0-1
 func TestInitHiddenLayerNeuronsWeightsInRange(t *testing.T) {
-	layer := createTestLayer(t, "test", 10, 20)
+	layer := createTestLayer(t, 0, 10, 20)
 
 	InitHiddenLayerNeurons(&layer)
 
@@ -47,20 +47,18 @@ func TestInitHiddenLayerNeuronsWeightsInRange(t *testing.T) {
 
 // Test initialized random bias is between 0-1
 func TestInitHiddenLayerNeuronsBiasInRange(t *testing.T) {
-	layer := createTestLayer(t, "test", 10, 20)
+	layer := createTestLayer(t, 0, 10, 20)
 
 	InitHiddenLayerNeurons(&layer)
 
-	for i, n := range layer.Neurons {
-		if n.Bias < 0 || n.Bias >= 1 {
-			t.Errorf("neuron %v: got bias %v, want value in [0, 1)", i, n.Bias)
-		}
+	if layer.Bias < 0 || layer.Bias >= 1 {
+		t.Errorf("got bias %v, want value in [0, 1)", layer.Bias)
 	}
 }
 
 // Edge case if only 1 neuron and 784 weights is chosen as hyperparameters
 func TestInitHiddenLayerNeuronsSingleNeuron(t *testing.T) {
-	layer := createTestLayer(t, "test", 1, 784)
+	layer := createTestLayer(t, 0, 1, 784)
 
 	InitHiddenLayerNeurons(&layer)
 
@@ -75,7 +73,7 @@ func TestInitHiddenLayerNeuronsSingleNeuron(t *testing.T) {
 
 // Edge case if only 1 weight per neuron is chosen as hyperparameters
 func TestInitHiddenLayerNeuronsSingleParam(t *testing.T) {
-	layer := createTestLayer(t, "test", 5, 1)
+	layer := createTestLayer(t, 0, 5, 1)
 
 	InitHiddenLayerNeurons(&layer)
 
