@@ -140,12 +140,17 @@ func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer)
 	return nil
 }
 
+// Transpose function to convert []Neuron into a column-based [][]float64
+// We treat 1 Neuron as a column of a matrix because in Matrix Multiplication
+// the order of operations is to multiply each row of the left matrix against
+// each column on the right matrix, and then sum their products. Since []Neuron
+// is being stored as rows, we need to convert it into a column
 func neuronToMatrix(n []Neuron) [][]float64 {
-	rows := len(n[0].Weights)            // 784
-	matrix := CreateMatrix(rows, len(n)) // 16
+	rows := len(n[0].Weights)
+	matrix := CreateMatrix(rows, len(n))
 
-	for row := range rows { //784
-		for col := range len(n) { // 16
+	for row := range rows {
+		for col := range len(n) {
 			matrix[row][col] = n[col].Weights[row]
 		}
 	}
