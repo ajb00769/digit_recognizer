@@ -38,6 +38,11 @@ type HiddenLayer struct {
 	Bias     float64
 }
 
+type OutputLayer struct {
+	Logits      []float64
+	ResultIndex int
+}
+
 func NewHiddenLayer(layerNum uint, neuronCount uint, paramsPerNeuron uint) (layer HiddenLayer, err error) {
 	if neuronCount == 0 || paramsPerNeuron == 0 {
 		err = errors.New("Arg neuronCount and paramsPerNeuron must at least be 1")
@@ -58,10 +63,13 @@ func (hl *HiddenLayer) LoadWeights() {
 	// check if weights for this layer match the hyperparams in CreateHiddenLayer
 }
 
-// TODO: Output Layer
-func Output() {
-	// Implement output layer logic here
-	// Use softmax activation function
+// Output Layer
+func Output(hlResult []float64) OutputLayer {
+	softmaxed := Softmax(hlResult)
+	max := slices.Max(softmaxed)
+	index := slices.Index(softmaxed, max)
+
+	return OutputLayer{softmaxed, index}
 }
 
 // Activation Functions
@@ -92,17 +100,19 @@ func Softmax(logits []float64) []float64 {
 	return output
 }
 
-func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer) error {
+func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer) (OutputLayer, error) {
 	flattened := Input(matrixInput)
 
 	// input layer to first hidden layer
 	inputMatrix := make([][]float64, 1)
 	inputMatrix[0] = flattened[:] // convert slice to matrix
 
+	var output OutputLayer
+
 	result, err := MatMul(inputMatrix, neuronToMatrix(hiddenLayers[0].Neurons))
 
 	if err != nil {
-		return err
+		return output, err
 	}
 
 	activatedResult := CreateMatrix(len(result), len(result[0]))
@@ -124,7 +134,7 @@ func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer)
 		result, err := MatMul(activatedResult, neuronToMatrix(hiddenLayers[layer].Neurons))
 
 		if err != nil {
-			return err
+			return output, err
 		}
 
 		activatedResult = CreateMatrix(len(result), len(result[0]))
@@ -137,7 +147,11 @@ func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer)
 		}
 	}
 
-	return nil
+	if len(activatedResult) > 1 {
+		return output, errors.New("Final layer had more than one set of activations.")
+	}
+
+	return Output(activatedResult[0]), nil
 }
 
 // Transpose function to convert []Neuron into a column-based [][]float64
