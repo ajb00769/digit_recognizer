@@ -4,6 +4,7 @@ import (
 	"errors"
 	"math"
 	"math/rand/v2"
+	"os"
 	"slices"
 )
 
@@ -11,10 +12,21 @@ type Neuron struct {
 	Weights []float64
 }
 
+type HiddenLayer struct {
+	LayerNum uint
+	Neurons  []Neuron
+	Bias     float64
+}
+
+type OutputLayer struct {
+	Logits      []float64
+	ResultIndex int
+}
+
 // Input Layer 28 * 28 matrix flatten. We do not mutate the Input so
 // it's safe to pass in the Input parameter value itself instead of
 // creating a copy of it
-func Input(matrixInput *[28][28]float64) [784]float64 {
+func FlattenInput(matrixInput *[28][28]float64) [784]float64 {
 	// NOTE: using fixed size array to enforce rigid input lengths
 	// anything less or greater than the fixed size should not be
 	// acceptable since the feed-forward mechanism to other layers
@@ -32,17 +44,7 @@ func Input(matrixInput *[28][28]float64) [784]float64 {
 	return flattened
 }
 
-type HiddenLayer struct {
-	LayerNum uint
-	Neurons  []Neuron
-	Bias     float64
-}
-
-type OutputLayer struct {
-	Logits      []float64
-	ResultIndex int
-}
-
+// Hidden Layer constructor
 func NewHiddenLayer(layerNum uint, neuronCount uint, paramsPerNeuron uint) (layer HiddenLayer, err error) {
 	if neuronCount == 0 || paramsPerNeuron == 0 {
 		err = errors.New("Arg neuronCount and paramsPerNeuron must at least be 1")
@@ -57,19 +59,20 @@ func NewHiddenLayer(layerNum uint, neuronCount uint, paramsPerNeuron uint) (laye
 	return
 }
 
-func (hl *HiddenLayer) LoadWeights() {
+func (hl *HiddenLayer) LoadWeights(weightsFile *os.File) {
 	// check if weights file exist
 	// check if weights file is not empty
-	// check if weights for this layer match the hyperparams in CreateHiddenLayer
+	// check if weights for this layer match the hyperparams in NewHiddenLayer
 }
 
-// Output Layer
-func Output(hlResult []float64) OutputLayer {
+// Output Layer constructor
+func NewOutputLayer(hlResult []float64) (layer OutputLayer, err error) {
 	softmaxed := Softmax(hlResult)
 	max := slices.Max(softmaxed)
 	index := slices.Index(softmaxed, max)
 
-	return OutputLayer{softmaxed, index}
+	layer = OutputLayer{softmaxed, index}
+	return
 }
 
 // Activation Functions
@@ -77,7 +80,6 @@ func Sigmoid(x float64) float64 {
 	return 1 / (1 + math.Exp(-x))
 }
 
-// Activation function used in the output layer
 func Softmax(logits []float64) []float64 {
 	// get max value in slice for exponent rule
 	max := slices.Max(logits)
@@ -101,7 +103,7 @@ func Softmax(logits []float64) []float64 {
 }
 
 func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer) (OutputLayer, error) {
-	flattened := Input(matrixInput)
+	flattened := FlattenInput(matrixInput)
 
 	// input layer to first hidden layer
 	inputMatrix := make([][]float64, 1)
@@ -151,7 +153,7 @@ func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer)
 		return output, errors.New("Final layer had more than one set of activations.")
 	}
 
-	return Output(activatedResult[0]), nil
+	return NewOutputLayer(activatedResult[0])
 }
 
 // Transpose function to convert []Neuron into a column-based [][]float64
