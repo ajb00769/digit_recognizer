@@ -51,12 +51,22 @@ func NewHiddenLayer(layerNum uint, neuronCount uint, paramsPerNeuron uint) (laye
 		return
 	}
 
-	layer = HiddenLayer{layerNum, make([]Neuron, neuronCount), rand.Float64()}
+	layer = HiddenLayer{layerNum, make([]Neuron, neuronCount), 0.0}
 
 	for i := range layer.Neurons {
 		layer.Neurons[i].Weights = make([]float64, paramsPerNeuron)
 	}
 	return
+}
+
+// only to be used during training, populate hidden layer with random values for training
+func (hl *HiddenLayer) InitWeights() {
+	for i := range hl.Neurons {
+		for weight := range hl.Neurons[i].Weights {
+			hl.Neurons[i].Weights[weight] = rand.Float64()
+		}
+	}
+	hl.Bias = rand.Float64()
 }
 
 func (hl *HiddenLayer) LoadWeights(weightsFile *os.File) {
