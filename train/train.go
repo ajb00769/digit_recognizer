@@ -65,7 +65,9 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 	currentEpochAccuracy := 0.0
 	previousEpochAccuracy := 0.0
 
-	for previousEpochAccuracy <= currentEpochAccuracy {
+	maxEpochs := 10
+
+	for previousEpochAccuracy <= currentEpochAccuracy && currentEpoch < maxEpochs {
 		previousEpochAccuracy = currentEpochAccuracy
 
 		trainModel(trainingData, &model)
