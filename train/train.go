@@ -137,7 +137,11 @@ func getFileHash(file *os.File) ([]byte, error) {
 
 func createHiddenLayers(layerCount uint, neuronCount uint, weightCount uint) (hiddenLayers []*ml.HiddenLayer, err error) {
 	for layerNum := range layerCount {
-		layer, errMsg := ml.NewHiddenLayer(layerNum, neuronCount, weightCount)
+		paramsPerNeuron := weightCount
+		if layerNum > 0 {
+			paramsPerNeuron = neuronCount // subsequent layers receive previous layer's neuron outputs
+		}
+		layer, errMsg := ml.NewHiddenLayer(layerNum, neuronCount, paramsPerNeuron)
 
 		if errMsg != nil {
 			// bubble up error message to whatever is calling this function
