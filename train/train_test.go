@@ -17,7 +17,7 @@ func createTestLayer(t *testing.T, layerNum uint, neuronCount uint, paramsPerNeu
 func TestInitHiddenLayerNeuronsHappyPath(t *testing.T) {
 	layer := createTestLayer(t, 0, 12, 36)
 
-	InitHiddenLayerNeurons(&layer)
+	layer.InitWeights()
 
 	if len(layer.Neurons) != 12 {
 		t.Errorf("got %v neurons, want 12", len(layer.Neurons))
@@ -34,7 +34,7 @@ func TestInitHiddenLayerNeuronsHappyPath(t *testing.T) {
 func TestInitHiddenLayerNeuronsWeightsInRange(t *testing.T) {
 	layer := createTestLayer(t, 0, 10, 20)
 
-	InitHiddenLayerNeurons(&layer)
+	layer.InitWeights()
 
 	for i, n := range layer.Neurons {
 		for j, w := range n.Weights {
@@ -49,7 +49,7 @@ func TestInitHiddenLayerNeuronsWeightsInRange(t *testing.T) {
 func TestInitHiddenLayerNeuronsBiasInRange(t *testing.T) {
 	layer := createTestLayer(t, 0, 10, 20)
 
-	InitHiddenLayerNeurons(&layer)
+	layer.InitWeights()
 
 	if layer.Bias < 0 || layer.Bias >= 1 {
 		t.Errorf("got bias %v, want value in [0, 1)", layer.Bias)
@@ -60,7 +60,7 @@ func TestInitHiddenLayerNeuronsBiasInRange(t *testing.T) {
 func TestInitHiddenLayerNeuronsSingleNeuron(t *testing.T) {
 	layer := createTestLayer(t, 0, 1, 784)
 
-	InitHiddenLayerNeurons(&layer)
+	layer.InitWeights()
 
 	if len(layer.Neurons) != 1 {
 		t.Errorf("got %v neurons, want 1", len(layer.Neurons))
@@ -75,7 +75,7 @@ func TestInitHiddenLayerNeuronsSingleNeuron(t *testing.T) {
 func TestInitHiddenLayerNeuronsSingleParam(t *testing.T) {
 	layer := createTestLayer(t, 0, 5, 1)
 
-	InitHiddenLayerNeurons(&layer)
+	layer.InitWeights()
 
 	for i, n := range layer.Neurons {
 		if len(n.Weights) != 1 {

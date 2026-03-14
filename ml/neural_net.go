@@ -112,12 +112,9 @@ func Softmax(logits []float64) []float64 {
 	return output
 }
 
-func ForwardPropagate(matrixInput *[28][28]float64, hiddenLayers []*HiddenLayer) (OutputLayer, error) {
-	flattened := FlattenInput(matrixInput)
-
-	// input layer to first hidden layer
+func ForwardPropagate(flattened []float64, hiddenLayers []*HiddenLayer) (OutputLayer, error) {
 	inputMatrix := make([][]float64, 1)
-	inputMatrix[0] = flattened[:] // convert slice to matrix
+	inputMatrix[0] = flattened // assign flattened input to input layer
 
 	var output OutputLayer
 
