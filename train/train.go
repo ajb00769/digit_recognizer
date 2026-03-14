@@ -70,10 +70,12 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 	for previousEpochAccuracy <= currentEpochAccuracy && currentEpoch < maxEpochs {
 		previousEpochAccuracy = currentEpochAccuracy
 
+		log.Printf("Epoch %d starting...\n", currentEpoch)
 		trainModel(trainingData, &model)
 		// train and save weights into file
 
 		currentEpochAccuracy = testModel(testingData, &model)
+		log.Printf("Epoch %d complete. Accuracy: %.4f\n", currentEpoch, currentEpochAccuracy)
 		currentEpoch += 1
 	}
 
@@ -111,6 +113,10 @@ func trainModel(data [][]string, model *[]*ml.HiddenLayer) {
 		}
 
 		prediction = output.ResultIndex
+
+		if row%10000 == 0 {
+			log.Printf("  row %d processed\n", row)
+		}
 
 		if prediction != int(label) {
 			// if prediction is wrong, apply computeLoss to backpropagate
