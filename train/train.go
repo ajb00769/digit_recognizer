@@ -72,8 +72,6 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 
 		log.Printf("Epoch %d starting...\n", currentEpoch)
 		trainModel(trainingData, &model)
-		// train and save weights into file
-
 		currentEpochAccuracy = testModel(testingData, &model)
 		log.Printf("Epoch %d complete. Accuracy: %.4f\n", currentEpoch, currentEpochAccuracy)
 		currentEpoch += 1
