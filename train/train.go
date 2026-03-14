@@ -84,6 +84,9 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 
 func trainModel(data [][]string, model *[]*ml.HiddenLayer) {
 	for row := range data {
+		if row == 0 {
+			continue // skip header row
+		}
 		var err error
 		var prediction int
 
