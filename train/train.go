@@ -65,7 +65,7 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 	currentEpochAccuracy := 0.0
 	previousEpochAccuracy := 0.0
 
-	maxEpochs := 10
+	maxEpochs := 1 // TODO: set this as hard limit just for testing, ideally we create a model accuracy check function
 
 	for previousEpochAccuracy <= currentEpochAccuracy && currentEpoch < maxEpochs {
 		previousEpochAccuracy = currentEpochAccuracy
@@ -119,7 +119,7 @@ func trainModel(data [][]string, model *[]*ml.HiddenLayer) {
 		}
 
 		if prediction != int(label) {
-			// if prediction is wrong, apply computeLoss to backpropagate
+			// TODO: if prediction is wrong, apply computeLoss to backpropagate
 		}
 	}
 }
