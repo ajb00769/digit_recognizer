@@ -99,10 +99,12 @@ func trainModel(data [][]string, model *[]*ml.HiddenLayer) {
 		pixels := make([]float64, len(data[row])-1)
 
 		for index, value := range data[row][1:] { // exclude label
-			pixels[index], err = strconv.ParseFloat(value, 64)
+			pixel, err := strconv.ParseFloat(value, 64)
 			if err != nil {
 				log.Fatalf("Failed to parse str to float64 pixel: %v", err)
 			}
+			// divide by 255 because training data pixels range from 0-255 which need to be normalized to 0-1
+			pixels[index] = pixel / 255.0
 		}
 
 		output, err := ml.ForwardPropagate(pixels, *model)
