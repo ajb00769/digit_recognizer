@@ -19,8 +19,8 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 	}
 	defer trainingFileFile.Close()
 
-	testingFileFile, testingFileReadErr := os.Open(testingFile)
-	if testingFileReadErr != nil {
+	testingFileFile, err := os.Open(testingFile)
+	if err != nil {
 		log.Fatalf("Failed to load testing file. %v\n", err)
 	}
 	defer testingFileFile.Close()
