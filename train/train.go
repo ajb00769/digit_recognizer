@@ -8,7 +8,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"strconv"
 )
 
 func Train(trainingFile string, testingFile string, layerCount uint, neuronCount uint, weightCount uint) {
@@ -61,6 +60,8 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 		model[i].InitWeights()
 	}
 
+	// TODO: create output layer once forward propagation is reimplemented
+
 	currentEpoch := 0
 	currentEpochAccuracy := 0.0
 	previousEpochAccuracy := 0.0
@@ -83,45 +84,7 @@ func Train(trainingFile string, testingFile string, layerCount uint, neuronCount
 }
 
 func trainModel(data [][]string, model *[]*ml.HiddenLayer) {
-	for row := range data {
-		if row == 0 {
-			continue // skip header row
-		}
-		var err error
-		var prediction int
-
-		// get the data label
-		label, err := strconv.ParseInt(data[row][0], 10, 32)
-		if err != nil {
-			log.Fatalf("Failed to parse str to float64 label: %v", err)
-		}
-		// convert string csv data to float
-		pixels := make([]float64, len(data[row])-1)
-
-		for index, value := range data[row][1:] { // exclude label
-			pixel, err := strconv.ParseFloat(value, 64)
-			if err != nil {
-				log.Fatalf("Failed to parse str to float64 pixel: %v", err)
-			}
-			// divide by 255 because training data pixels range from 0-255 which need to be normalized to 0-1
-			pixels[index] = pixel / 255.0
-		}
-
-		output, err := ml.ForwardPropagate(pixels, *model)
-		if err != nil {
-			log.Fatalf("Failed to return output layer: %v", err)
-		}
-
-		prediction = output.ResultIndex
-
-		if row%10000 == 0 {
-			log.Printf("  row %d processed\n", row)
-		}
-
-		if prediction != int(label) {
-			// TODO: if prediction is wrong, apply computeLoss to backpropagate
-		}
-	}
+	// TODO: reimplement once forward propagation is rewritten
 }
 
 // returns model accuracy relative to testing data
@@ -147,18 +110,18 @@ func createHiddenLayers(layerCount uint, neuronCount uint, weightCount uint) (hi
 		if layerNum > 0 {
 			paramsPerNeuron = neuronCount // subsequent layers receive previous layer's neuron outputs
 		}
-		layer, errMsg := ml.NewHiddenLayer(layerNum, neuronCount, paramsPerNeuron)
+		layer, err := ml.NewHiddenLayer(layerNum, neuronCount, paramsPerNeuron)
 
-		if errMsg != nil {
-			// bubble up error message to whatever is calling this function
-			err = errMsg
-			return
+		if err != nil {
+			return nil, err
 		}
 
 		hiddenLayers = append(hiddenLayers, &layer)
 	}
 	return
 }
+
+// TODO: reimplement once output layer and forward propagation are rewritten
 
 func loadTrainingData(file []byte, model []*ml.HiddenLayer) {
 }

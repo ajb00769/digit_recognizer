@@ -1,142 +1,86 @@
 package ml
 
 import (
-	"math"
-	"math/rand"
-	"os"
 	"testing"
 )
 
-var testMatrix [28][28]float64
-var emptyMatrix [28][28]float64
-var emptyArray [784]float64
+// helper to create a HiddenLayer with neurons and weights already allocated
+func createTestLayer(t *testing.T, layerNum uint, neuronCount uint, paramsPerNeuron uint) HiddenLayer {
+	layer, err := NewHiddenLayer(layerNum, neuronCount, paramsPerNeuron)
+	if err != nil {
+		t.Fatalf("failed to create test layer: %v", err)
+	}
+	return layer
+}
 
-func populateTestMatrix() {
-	for i := range testMatrix {
-		for j := range testMatrix[i] {
-			testMatrix[i][j] = ((float64(i) * 28.0) + float64(j)) / 100.0
+func TestInitHiddenLayerNeuronsHappyPath(t *testing.T) {
+	layer := createTestLayer(t, 0, 12, 36)
+
+	layer.InitWeights()
+
+	if len(layer.Neurons) != 12 {
+		t.Errorf("got %v neurons, want 12", len(layer.Neurons))
+	}
+
+	for i := range layer.Neurons {
+		if len(layer.Neurons[i].Weights) != 36 {
+			t.Errorf("neuron %v: got %v weights, want 36", i, len(layer.Neurons[i].Weights))
 		}
 	}
 }
 
-func TestMain(m *testing.M) {
-	populateTestMatrix()
-	exitCode := m.Run()
-	os.Exit(exitCode)
-}
+// Test if initialized neuron's weight is between 0-1
+func TestInitHiddenLayerNeuronsWeightsInRange(t *testing.T) {
+	layer := createTestLayer(t, 0, 10, 20)
 
-func TestInputHappyPath(t *testing.T) {
-	var expected [784]float64
+	layer.InitWeights()
 
-	result := FlattenInput(&testMatrix)
-
-	for i := range expected {
-		expected[i] = float64(i) / 100.0
-	}
-
-	if result != expected {
-		t.Errorf("got %v, want %v", result, expected)
-	}
-}
-
-func TestInputAllZeroes(t *testing.T) {
-	result := FlattenInput(&emptyMatrix)
-	if result != emptyArray {
-		t.Errorf("got %v, want %v", result, emptyArray)
-	}
-}
-
-func TestSoftmax(t *testing.T) {
-	testCases := [][]float64{
-		make([]float64, 3),
-		make([]float64, 10),
-		make([]float64, 100),
-		make([]float64, 1000),
-	}
-	// NOTE: only testing up to 1000 neurons since this simple ML project's
-	// output layer won't be dealing with a lot of neurons before output.
-
-	// The number of neurons towards the end of the feed-forward would have
-	// thinned out
-
-	// Populate test data
-	for testCase := range testCases {
-		for i := range testCase {
-			testCases[testCase][i] = rand.Float64()
-		}
-	}
-
-	// Perform Tests
-	for testCase := range testCases {
-		var sum float64
-		result := Softmax(testCases[testCase])
-
-		for i := range result {
-			sum += result[i]
-		}
-
-		// allow floating point inaccuracy up to 1e-10 epsilon value or 10 decimal places
-		if math.Abs(sum-1.0) > 1e-10 {
-			t.Errorf("got %v, want %v, in test case logit length %v", sum, 1, len(testCases[testCase]))
+	for i, n := range layer.Neurons {
+		for j, w := range n.Weights {
+			if w < 0 || w >= 1 {
+				t.Errorf("neuron %v weight %v: got %v, want value in [0, 1)", i, j, w)
+			}
 		}
 	}
 }
 
-func TestSoftmaxLargeLogits(t *testing.T) {
-	testCase := []float64{700.0, 0.22, 1.11}
+// Test initialized random bias is between 0-1
+func TestInitHiddenLayerNeuronsBiasInRange(t *testing.T) {
+	layer := createTestLayer(t, 0, 10, 20)
 
-	result := Softmax(testCase)
+	layer.InitWeights()
 
-	for i := range result {
-		if math.IsNaN(result[i]) {
-			t.Errorf("got NaN, want a float64")
+	for i, n := range layer.Neurons {
+		if n.Bias < 0 || n.Bias >= 1 {
+			t.Errorf("neuron %v: got bias %v, want value in [0, 1)", i, n.Bias)
 		}
 	}
 }
 
-func TestSoftmaxNegativeLogits(t *testing.T) {
-	var sum float64
-	testCase := make([]float64, 5)
+// Edge case if only 1 neuron and 784 weights is chosen as hyperparameters
+func TestInitHiddenLayerNeuronsSingleNeuron(t *testing.T) {
+	layer := createTestLayer(t, 0, 1, 784)
 
-	// Populate test case with negative floats
-	for i := range testCase {
-		testCase[i] = rand.Float64() * -1
+	layer.InitWeights()
+
+	if len(layer.Neurons) != 1 {
+		t.Errorf("got %v neurons, want 1", len(layer.Neurons))
 	}
 
-	result := Softmax(testCase)
-
-	for i := range result {
-		sum += result[i]
-		// check if value negative or exceeds 1 after softmax function
-		if result[i] < 0 || result[i] > 1 {
-			t.Errorf("got %v at index %v, want value between 0-1", result[i], i)
-		}
-	}
-
-	if math.Abs(sum-1.0) > 1e-10 {
-		t.Errorf("got %v, want %v", sum, 1)
+	if len(layer.Neurons[0].Weights) != 784 {
+		t.Errorf("got %v weights, want 784", len(layer.Neurons[0].Weights))
 	}
 }
 
-func TestSoftmaxIdenticalLogits(t *testing.T) {
-	testCase := []float64{5, 5, 5, 5}
+// Edge case if only 1 weight per neuron is chosen as hyperparameters
+func TestInitHiddenLayerNeuronsSingleParam(t *testing.T) {
+	layer := createTestLayer(t, 0, 5, 1)
 
-	result := Softmax(testCase)
+	layer.InitWeights()
 
-	for i := range result {
-		if result[0] != result[i] {
-			t.Errorf("got %v, want equal probabilities", result)
-			break
+	for i, n := range layer.Neurons {
+		if len(n.Weights) != 1 {
+			t.Errorf("neuron %v: got %v weights, want 1", i, len(n.Weights))
 		}
-	}
-}
-
-func TestSoftmaxSingleLogit(t *testing.T) {
-	testCase := []float64{0.333}
-
-	result := Softmax(testCase)
-
-	if result[0] != 1 {
-		t.Errorf("want 100pct probability in single logit, got %v", result)
 	}
 }
