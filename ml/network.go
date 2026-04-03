@@ -35,4 +35,5 @@ func (nn *NeuralNetwork) Init() {
 	nn.OutputLayer.Init()
 }
 
+// TODO
 func (nn *NeuralNetwork) LoadModel(fp string) {}

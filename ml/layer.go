@@ -60,6 +60,7 @@ func (layer *Layer) Init() {
 	}
 }
 
+// TODO
 // Inference
 func (layer *Layer) Run() {}
 
@@ -86,6 +87,7 @@ func (output *Output) Init() {
 	output.CurrentLayer.Init()
 }
 
+// TODO
 // Inference
 func (output *Output) Run() {
 	CreateMatrix(len(output.PreviousLayer.Neurons), len(output.CurrentLayer.Neurons))
