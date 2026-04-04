@@ -18,6 +18,7 @@ func NewNetwork(conf NetworkConfig) (network NeuralNetwork, err error) {
 	for layer := range layers {
 		if layer == 0 {
 			network.HiddenLayers[layer], err = NewHiddenLayer(conf.HiddenLayerSizes[0], 10)
+			continue
 		}
 		network.HiddenLayers[layer], err = NewHiddenLayer(conf.HiddenLayerSizes[layer], conf.HiddenLayerSizes[layer-1])
 	}
