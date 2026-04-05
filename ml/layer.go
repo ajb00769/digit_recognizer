@@ -2,6 +2,7 @@ package ml
 
 import (
 	"errors"
+	"math"
 	"math/rand/v2"
 )
 
@@ -51,12 +52,12 @@ func NewHiddenLayer(neuronCount int, weightsPerNeuron int) (layer Layer, err err
 func (layer *Layer) Init() {
 	for neuron := range layer.Neurons {
 		for weight := range layer.Neurons[neuron] {
-			layer.Neurons[neuron][weight] = rand.Float64()
+			layer.Neurons[neuron][weight] = xavierInitRandom()
 		}
 	}
 
 	for bias := range layer.Bias {
-		layer.Bias[bias] = rand.Float64()
+		layer.Bias[bias] = xavierInitRandom()
 	}
 }
 
@@ -76,7 +77,7 @@ func NewOutputLayer(prevLayer *Layer) (output Output, err error) {
 	}
 
 	output.PreviousLayer = prevLayer
-	output.CurrentLayer.Neurons = CreateMatrix(10, numOfWeights)
+	output.CurrentLayer.Neurons = CreateMatrix(numOfWeights, 10)
 	output.CurrentLayer.Bias = make([]float64, 10)
 
 	return
@@ -89,6 +90,9 @@ func (output *Output) Init() {
 
 // TODO
 // Inference
-func (output *Output) Run() {
-	CreateMatrix(len(output.PreviousLayer.Neurons), len(output.CurrentLayer.Neurons))
+func (output *Output) Run() {}
+
+func xavierInitRandom() float64 {
+	x := math.Sqrt(6.0 / (784.0 + 10.0))
+	return rand.Float64()*2*x - x
 }
