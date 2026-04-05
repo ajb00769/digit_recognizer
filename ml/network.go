@@ -24,7 +24,7 @@ func NewNetwork(conf NetworkConfig) (network NeuralNetwork, err error) {
 			network.HiddenLayers[layer], err = NewHiddenLayer(784, conf.HiddenLayerSizes[0])
 			continue
 		}
-		network.HiddenLayers[layer], err = NewHiddenLayer(conf.HiddenLayerSizes[layer], conf.HiddenLayerSizes[layer-1])
+		network.HiddenLayers[layer], err = NewHiddenLayer(conf.HiddenLayerSizes[layer-1], conf.HiddenLayerSizes[layer])
 	}
 
 	network.OutputLayer, err = NewOutputLayer(&network.HiddenLayers[layers-1])
@@ -43,30 +43,25 @@ func (nn *NeuralNetwork) Init() {
 // TODO
 func (nn *NeuralNetwork) Load(fp string) {}
 
-// WIP
 func (nn *NeuralNetwork) ForwardPropagate(inp Input) (err error) {
-	inp.Flatten()
+	signal := inp.Flatten()
 
-	result, err := MatMul(inp.Flattened, nn.HiddenLayers[0].Neurons)
-	data, _ := json.MarshalIndent(result, "", "  ")
-	fmt.Println("MATMUL RESULT INPUT -> FIRST HIDDEN LAYER:")
-	fmt.Println(string(data))
-
-	inputResult := make([]float64, len(result[0]))
-	for num := range result[0] {
-		inputResult[num] = result[0][num] + nn.HiddenLayers[0].Bias[num]
+	for layer := range nn.HiddenLayers {
+		signal, err = nn.HiddenLayers[layer].Forward(signal)
+		data, _ := json.MarshalIndent(signal, "", "  ")
+		fmt.Println(string(data))
 	}
-	data, _ = json.MarshalIndent(inputResult, "", "  ")
-	fmt.Println("FIRST HIDDEN LAYER WEIGHTS + BIAS:")
-	fmt.Println(string(data))
 
-	activated := make([]float64, len(inputResult))
-	for item := range inputResult {
-		activated[item] = Sigmoid(inputResult[item])
+	if err != nil {
+		return err
 	}
-	data, _ = json.MarshalIndent(activated, "", "  ")
-	fmt.Println("FIRST HIDDEN LAYER ACTIVATED:")
+
+	softmaxed, err := nn.OutputLayer.Forward(signal)
+
+	data, _ := json.MarshalIndent(softmaxed, "", "  ")
 	fmt.Println(string(data))
 
 	return nil
 }
+
+func (nn *NeuralNetwork) BackPropagate() {}

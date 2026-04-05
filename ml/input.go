@@ -5,20 +5,21 @@ package ml
 // creating a copy of it
 
 type Input struct {
-	Raw       [28][28]float64
-	Flattened [784]float64
+	Raw [28][28]float64
 }
 
-func (inp *Input) Flatten() {
+func (inp *Input) Flatten() []float64 {
 	// NOTE: using fixed size array to enforce rigid input lengths
 	// anything less or greater than the fixed size should not be
 	// acceptable since the feed-forward mechanism to other layers
 	// will need this fixed sizing
+	flattened := CreateMatrix(1, 784)
 	for row := range inp.Raw {
 		for item := range inp.Raw[row] {
 			// hardcoded 28 in the formula since we expect 28 to be
 			// a constant size
-			inp.Flattened[(row*28)+item] = inp.Raw[row][item]
+			flattened[0][(row*28)+item] = inp.Raw[row][item]
 		}
 	}
+	return flattened[0]
 }

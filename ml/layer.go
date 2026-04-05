@@ -6,18 +6,23 @@ import (
 	"math/rand/v2"
 )
 
+type NetworkLayer interface {
+	Init()
+	Run()
+}
+
 type Layer struct {
-	Neurons [][]float64
-	Bias    []float64
+	Neurons   [][]float64
+	Bias      []float64
+	Activated [][]float64
 	// WHERE len(Bias) == number of Neurons/rows
 	// Bias[0] maps to Neurons[0][]
 }
 
 type Output struct {
-	PreviousLayer *Layer
-	RawLogits     [10]float64
-	Softmaxed     [10]float64
-	CurrentLayer  Layer
+	RawLogits    [10]float64
+	Softmaxed    [10]float64
+	CurrentLayer Layer
 }
 
 /*
@@ -44,7 +49,7 @@ func NewHiddenLayer(neuronCount int, weightsPerNeuron int) (layer Layer, err err
 	}
 
 	layer.Neurons = CreateMatrix(neuronCount, weightsPerNeuron)
-	layer.Bias = make([]float64, neuronCount)
+	layer.Bias = make([]float64, weightsPerNeuron)
 	return
 }
 
@@ -63,20 +68,36 @@ func (layer *Layer) Init() {
 
 // TODO
 // Inference
-func (layer *Layer) Run() {}
+func (layer *Layer) Forward(prevOutput []float64) (activated []float64, err error) {
+	matrix := CreateMatrix(1, len(prevOutput))
+	matrix[0] = prevOutput
+
+	result, err := MatMul(matrix, layer.Neurons)
+	activated = make([]float64, len(result[0]))
+
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range result[0] {
+		tmp := result[0][i] + layer.Bias[i]
+		activated[i] = Sigmoid(tmp)
+	}
+
+	return activated, nil
+}
 
 // -- OUTPUT LAYER --
 // Output Layer Constructor
 func NewOutputLayer(prevLayer *Layer) (output Output, err error) {
 	// previous layer's neuron count = output layer's weight count
-	numOfWeights := len(prevLayer.Neurons)
+	numOfWeights := len(prevLayer.Neurons[0])
 
 	if numOfWeights < 1 {
 		err = errors.New("Previous layer's neuron count should be at least 1")
 		return
 	}
 
-	output.PreviousLayer = prevLayer
 	output.CurrentLayer.Neurons = CreateMatrix(numOfWeights, 10)
 	output.CurrentLayer.Bias = make([]float64, 10)
 
@@ -90,7 +111,15 @@ func (output *Output) Init() {
 
 // TODO
 // Inference
-func (output *Output) Run() {}
+func (output *Output) Forward(previousOutput []float64) ([]float64, error) {
+	result, err := output.CurrentLayer.Forward(previousOutput)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return Softmax(result), nil
+}
 
 func xavierInitRandom() float64 {
 	x := math.Sqrt(6.0 / (784.0 + 10.0))
