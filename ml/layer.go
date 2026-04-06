@@ -73,6 +73,11 @@ func (layer *Layer) Forward(prevOutput []float64) (activated []float64, err erro
 	matrix[0] = prevOutput
 
 	result, err := MatMul(matrix, layer.Neurons)
+
+	if err != nil {
+		return nil, err
+	}
+
 	activated = make([]float64, len(result[0]))
 
 	if err != nil {
