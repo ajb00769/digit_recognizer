@@ -2,3 +2,5 @@ weights/
 .zed/
 files/
 .claude/
+debug.json
+cmd/debug
