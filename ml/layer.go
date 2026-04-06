@@ -80,10 +80,6 @@ func (layer *Layer) Forward(prevOutput []float64) (activated []float64, err erro
 
 	activated = make([]float64, len(result[0]))
 
-	if err != nil {
-		return nil, err
-	}
-
 	for i := range result[0] {
 		tmp := result[0][i] + layer.Bias[i]
 		activated[i] = Sigmoid(tmp)
